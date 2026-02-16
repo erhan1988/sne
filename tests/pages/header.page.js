@@ -67,22 +67,6 @@ class HeaderPage {
     }
   }
 
-  async clickShopLink() {
-    try {
-      await this.shopLink.click();
-      const shopSectionHeading = this.page.getByRole('heading', { name: /shop our collection/i });
-      await expect(shopSectionHeading).toBeVisible();
-      await expect(this.shopSection).toBeVisible();
-      const shopCards = this.shopSection.locator('.group');
-      await expect(shopCards.first()).toBeVisible();
-      logSuccess('Shop link navigates to Shop Our Collection section and cards are visible');
-    } catch (error) {
-      logError('ERROR: Shop section or cards are not visible');
-      console.error(error);
-      throw error;
-    }
-  }
-
   async searchIconAndShoppingCartIcon() {
     try {
       await expect(this.searchIcon).toBeVisible();
@@ -114,6 +98,33 @@ class HeaderPage {
     }
   }
 
+    async clickShopLink() {
+    try {
+      await this.shopLink.click();
+      const shopSectionHeading = this.page.getByRole('heading', { name: /shop our collection/i });
+      await expect(shopSectionHeading).toBeVisible();
+      await expect(this.shopSection).toBeVisible();
+      const shopCards = this.shopSection.locator('.group');
+      await expect(shopCards.first()).toBeVisible();
+      logSuccess('Shop link navigates to Shop Our Collection section and cards are visible');
+    } catch (error) {
+      logError('ERROR: Shop section or cards are not visible');
+      console.error(error);
+      throw error;
+    }
+  }
+
+   async clickAboutLink() {
+    try {
+      await this.aboutLink.click();
+      await expect(this.page).toHaveURL(/\/about$/);
+      logSuccess('About link navigates to /about');
+    } catch (error) {
+      logError('ERROR: About link did not navigate to /about');
+      console.error(error);
+      throw error;
+    }
+  }
 
 
 }

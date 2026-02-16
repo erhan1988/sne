@@ -11,6 +11,6 @@ test.describe('Header', () => {
     await header.searchIconAndShoppingCartIcon();
     await header.authButtonsVisible();
     await header.clickShopLink();
-    // await header.assertAuthLinks();
+    await header.clickAboutLink();
   });
 });
