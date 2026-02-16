@@ -12,13 +12,14 @@ class AboutPage {
     this.meetTheTeam = page.getByRole('heading', { name: /meet the team/i });
     this.teamText = page.getByText(/The sneakerheads behind the scenes making it all happen\./i);
     this.teamImage = page.locator('div.relative.mb-4.mx-auto.w-48.h-48.rounded-full.overflow-hidden.shadow-lg img[alt="Erhan D."]');
+    this.shopCollectionButton = page.locator('button, a').filter({ hasText: /shop collection/i });
   }
 
   async goto() {
     await this.page.goto('/about');
   }
 
-  async assertUrl() {
+  async linkabout() {
     try {
       await expect(this.page).toHaveURL(/\/about$/);
       logSuccess('URL is /about');
@@ -29,16 +30,49 @@ class AboutPage {
     }
   }
 
-  async assertContent() {
+  async checkContent() {
     try {
-      await expect(this.title).toBeVisible();
-      await expect(this.story).toBeVisible();
-      await expect(this.meetTheTeam).toBeVisible();
-      await expect(this.teamText).toBeVisible();
-      await expect(this.teamImage.first()).toBeVisible();
-      logSuccess('About page content is visible');
+      const elements = [
+        { name: 'title', locator: this.title },
+        { name: 'story', locator: this.story },
+        { name: 'meet the team', locator: this.meetTheTeam },
+        { name: 'team text', locator: this.teamText },
+        { name: 'profile image', locator: this.teamImage.first() },
+        { name: 'shop collection button', locator: this.shopCollectionButton },
+      ];
+
+      for (const { name, locator } of elements) {
+        try {
+          const target = locator.first();
+          if (name === 'shop collection button') {
+            await target.scrollIntoViewIfNeeded();
+          }
+          await expect(target).toBeVisible();
+        } catch (error) {
+          logError(`ERROR: About page content missing: ${name}`);
+          console.error(error);
+          throw error;
+        }
+      }
+
+      logSuccess('About page content is visible: title, story, meet the team, profile image, shop collection button');
     } catch (error) {
       logError('ERROR: About page content is missing');
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async clickShopCollection() {
+    try {
+      const target = this.shopCollectionButton.first();
+      await target.scrollIntoViewIfNeeded();
+      await expect(target).toBeVisible();
+      await target.click();
+      await expect(this.page).toHaveURL(/\/viewall$/);
+      logSuccess('Shop Collection button navigates to /viewall');
+    } catch (error) {
+      logError('ERROR: Shop Collection button did not navigate to /viewall');
       console.error(error);
       throw error;
     }
