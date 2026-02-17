@@ -22,7 +22,7 @@ class AboutPage {
   async linkabout() {
     try {
       await expect(this.page).toHaveURL(/\/about$/);
-      logSuccess('URL is /about');
+      logSuccess(`URL is ${this.page.url()}`);
     } catch (error) {
       logError('ERROR: URL is not /about');
       console.error(error);

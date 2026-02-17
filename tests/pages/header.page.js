@@ -30,7 +30,6 @@ class HeaderPage {
 
   async goto() {
     await this.page.goto('/');
-    logSuccess(`Page opened: ${this.page.url()}`);
   }
 
   async logoHeader() {
