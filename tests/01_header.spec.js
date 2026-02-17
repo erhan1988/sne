@@ -1,10 +1,12 @@
 const { test } = require('@playwright/test');
 const { HeaderPage } = require('./pages/header.page');
+const { ContactPage } = require('./pages/contact.page');
 const { logInfo, logSuccess, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 
 test.describe('Header', () => {
   test('shows logo and Auth links', async ({ page }) => {
     const header = new HeaderPage(page);
+  //  const contact = new ContactPage(page);
     let stepNum = 0;
 
     const runStep = async (message, fn) => {
@@ -59,6 +61,13 @@ test.describe('Header', () => {
     await test.step('Click About link', async () => {
       await runStep('Click About link', async () => {
         await header.clickAboutLink();
+      });
+    });
+
+    await test.step('Click Contact Us link', async () => {
+      await runStep('Click Contact Us link', async () => {
+        await header.clickContactLink();
+        logSuccess('Contact Us click step completed');
       });
     });
   });

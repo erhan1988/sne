@@ -117,7 +117,7 @@ class HeaderPage {
     try {
       await this.aboutLink.click();
       await expect(this.page).toHaveURL(/\/about$/);
-      logSuccess('About link navigates to /about');
+      logSuccess(`About link navigates to ${this.page.url()}`);
     } catch (error) {
       logError('ERROR: About link did not navigate to /about');
       console.error(error);
@@ -125,6 +125,19 @@ class HeaderPage {
     }
   }
 
+  async clickContactLink() {
+    try {
+      logSuccess('Clicking Contact Us link');
+      await this.contactLink.click();
+      logSuccess('Contact Us link clicked');
+      await expect(this.page).toHaveURL(/\/contact$/);
+      logSuccess(`Contact Us link navigates to ${this.page.url()}`);
+    } catch (error) {
+      logError('ERROR: Contact Us link did not navigate to /contact');
+      console.error(error);
+      throw error;
+    }
+  }
 
 }
 
