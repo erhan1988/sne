@@ -1,6 +1,6 @@
 const { test } = require('@playwright/test');
 const { HeaderPage } = require('./pages/header.page');
-const { ContactPage } = require('./pages/contact.page');
+//const { ContactPage } = require('./pages/contact.page');
 const { logInfo, logSuccess, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 
 test.describe('Header', () => {
@@ -60,15 +60,34 @@ test.describe('Header', () => {
 
     await test.step('Click About link', async () => {
       await runStep('Click About link', async () => {
-        await header.clickAboutLink();
+        await header.clickNavLink('about');
       });
     });
 
     await test.step('Click Contact Us link', async () => {
       await runStep('Click Contact Us link', async () => {
-        await header.clickContactLink();
-        logSuccess('Contact Us click step completed');
+        await header.clickNavLink('contact');
       });
     });
+
+    await test.step('Click Login button', async () => {
+      await runStep('Click Login button', async () => {
+        await header.clickNavLink('login');
+      });
+    });
+
+    await test.step('Click Register button', async () => {
+      await runStep('Click Register button', async () => {
+        await header.clickNavLink('register');
+      });
+    });
+
+    await test.step('Click cart icon and verify login popup', async () => {
+      await runStep('Click cart icon and verify login popup', async () => {
+        await header.clickCartAndVerifyLoginPopup();
+      });
+    });
+
+    
   });
 });

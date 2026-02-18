@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const { logSuccess, logError } = require('../helpers/logger');
+const { verifyLoginRequiredPopupCancel } = require('../helpers/loginRequiredPopup');
 
 class HeaderPage {
   loginText = 'Login';
@@ -19,6 +20,7 @@ class HeaderPage {
     this.contactLink = this.header.getByRole('link', { name: /contact us/i }).or(this.header.getByRole('button', { name: /contact us/i }));
     this.searchIcon = this.header.locator('svg.lucide.lucide-search');
     this.shoppingCartIcon = this.header.locator('button.text-gray-500.hover\\:text-blue-600.transition-colors.relative svg.lucide.lucide-shopping-bag, button.text-gray-500.hover\\:text-blue-600.transition-colors.relative svg.lucide.lucide-shopping-cart');
+    this.shoppingCartButton = this.header.locator('button.text-gray-500.hover\\:text-blue-600.transition-colors.relative');
     this.shopSection = this.page.locator('#shop');
     this.loginButton = this.header
       .locator('button.text-sm.font-medium.text-gray-700.hover\\:text-blue-600.transition-colors')
@@ -97,6 +99,16 @@ class HeaderPage {
     }
   }
 
+  async clickCartAndVerifyLoginPopup() {
+    try {
+      await verifyLoginRequiredPopupCancel(this.page, this.shoppingCartButton);
+    } catch (error) {
+      logError('ERROR: Login Required popup did not appear from cart icon');
+      console.error(error);
+      throw error;
+    }
+  }
+
     async clickShopLink() {
     try {
       await this.shopLink.click();
@@ -113,27 +125,43 @@ class HeaderPage {
     }
   }
 
-   async clickAboutLink() {
+  async clickNavLink(target) {
     try {
-      await this.aboutLink.click();
-      await expect(this.page).toHaveURL(/\/about$/);
-      logSuccess(`About link navigates to ${this.page.url()}`);
-    } catch (error) {
-      logError('ERROR: About link did not navigate to /about');
-      console.error(error);
-      throw error;
-    }
-  }
+      if (target === 'about') {
+        await this.aboutLink.click();
+        await expect(this.page).toHaveURL(/\/about$/);
+        logSuccess(`About link navigates to ${this.page.url()}`);
+        logSuccess(`About URL: ${this.page.url()}`);
+        return;
+      }
 
-  async clickContactLink() {
-    try {
-      logSuccess('Clicking Contact Us link');
-      await this.contactLink.click();
-      logSuccess('Contact Us link clicked');
-      await expect(this.page).toHaveURL(/\/contact$/);
-      logSuccess(`Contact Us link navigates to ${this.page.url()}`);
+      if (target === 'contact') {
+        await this.contactLink.click();
+        await expect(this.page).toHaveURL(/\/contact$/);
+        logSuccess(`Contact Us link navigates to ${this.page.url()}`);
+        logSuccess(`Contact URL: ${this.page.url()}`);
+        return;
+      }
+
+      if (target === 'login') {
+        await this.loginButton.click();
+        await expect(this.page).toHaveURL(/\/login$/);
+        logSuccess(`Login button navigates to ${this.page.url()}`);
+        logSuccess(`Login URL: ${this.page.url()}`);
+        return;
+      }
+
+      if (target === 'register') {
+        await this.registerButton.click();
+        await expect(this.page).toHaveURL(/\/register$/);
+        logSuccess(`Register button navigates to ${this.page.url()}`);
+        logSuccess(`Register URL: ${this.page.url()}`);
+        return;
+      }
+
+      throw new Error(`Unsupported nav target: ${target}`);
     } catch (error) {
-      logError('ERROR: Contact Us link did not navigate to /contact');
+      logError('ERROR: Nav link did not navigate correctly');
       console.error(error);
       throw error;
     }

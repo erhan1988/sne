@@ -122,6 +122,7 @@ class ContactPage {
       }
 
       await this.sendMessageButton.click();
+      console.log('Send Message button clicked');
 
       const requiredFields = [
         { locator: this.fullNameInput, name: 'Full Name input' },
