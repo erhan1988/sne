@@ -19,6 +19,8 @@ class HeaderPage {
     this.aboutLink = this.header.getByRole('link', { name: /^about$/i }).or(this.header.getByRole('button', { name: /^about$/i }));
     this.contactLink = this.header.getByRole('link', { name: /contact us/i }).or(this.header.getByRole('button', { name: /contact us/i }));
     this.searchIcon = this.header.locator('svg.lucide.lucide-search');
+    this.searchInput = this.page.getByPlaceholder(/search/i)
+      .or(this.page.getByRole('textbox', { name: /search/i }));
     this.shoppingCartIcon = this.header.locator('button.text-gray-500.hover\\:text-blue-600.transition-colors.relative svg.lucide.lucide-shopping-bag, button.text-gray-500.hover\\:text-blue-600.transition-colors.relative svg.lucide.lucide-shopping-cart');
     this.shoppingCartButton = this.header.locator('button.text-gray-500.hover\\:text-blue-600.transition-colors.relative');
     this.shopSection = this.page.locator('#shop');
@@ -63,6 +65,17 @@ class HeaderPage {
       logSuccess('Contact Us Link exists in the Header');
     } catch (error) {
       logError('ERROR: One or more header nav items are missing');
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async verifyLogoAndNavLinks() {
+    try {
+      await this.logoHeader();
+      await this.navLinks();
+    } catch (error) {
+      logError('ERROR: Logo or header nav links are missing');
       console.error(error);
       throw error;
     }
@@ -127,6 +140,14 @@ class HeaderPage {
 
   async clickNavLink(target) {
     try {
+      if (target === 'home') {
+        await this.homeLink.click();
+        await expect(this.page).toHaveURL(/\/$/);
+        logSuccess(`Home link navigates to ${this.page.url()}`);
+        logSuccess(`Home URL: ${this.page.url()}`);
+        return;
+      }
+
       if (target === 'about') {
         await this.aboutLink.click();
         await expect(this.page).toHaveURL(/\/about$/);
@@ -162,6 +183,33 @@ class HeaderPage {
       throw new Error(`Unsupported nav target: ${target}`);
     } catch (error) {
       logError('ERROR: Nav link did not navigate correctly');
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async searchFromHeader(term) {
+    try {
+      await this.homeLink.click();
+      await expect(this.page).toHaveURL(/\/$/);
+
+      await this.searchIcon.click();
+      await expect(this.searchInput).toBeVisible();
+      await this.searchInput.fill(term);
+      await this.searchInput.press('Enter');
+
+      const resultCard = this.page.locator('.group').filter({ hasText: new RegExp(term, 'i') }).first();
+      await expect(resultCard).toBeVisible();
+      logSuccess(`Search results appear for ${term}`);
+
+      await this.searchInput.fill('');
+      const shopSectionHeading = this.page.getByRole('heading', { name: /shop our collection/i });
+      await expect(shopSectionHeading).toBeVisible();
+      await expect(this.shopSection).toBeVisible();
+      await expect(this.shopSection.locator('.group').first()).toBeVisible();
+      logSuccess('Shop section is visible after clearing search');
+    } catch (error) {
+      logError('ERROR: Search did not return results');
       console.error(error);
       throw error;
     }

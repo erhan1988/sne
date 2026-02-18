@@ -28,15 +28,9 @@ test.describe('Header', () => {
       });
     });
 
-    await test.step('Verify logo in header', async () => {
-      await runStep('Verify logo in header', async () => {
-        await header.logoHeader();
-      });
-    });
-
-    await test.step('Verify header nav links', async () => {
-      await runStep('Verify header nav links', async () => {
-        await header.navLinks();
+    await test.step('Verify logo and header nav links', async () => {
+      await runStep('Verify logo and header nav links', async () => {
+        await header.verifyLogoAndNavLinks();
       });
     });
 
@@ -85,6 +79,12 @@ test.describe('Header', () => {
     await test.step('Click cart icon and verify login popup', async () => {
       await runStep('Click cart icon and verify login popup', async () => {
         await header.clickCartAndVerifyLoginPopup();
+      });
+    });
+
+    await test.step('Search for Nike from header', async () => {
+      await runStep('Search for Nike from header', async () => {
+        await header.searchFromHeader('Nike');
       });
     });
 
