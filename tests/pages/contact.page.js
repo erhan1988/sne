@@ -95,24 +95,19 @@ class ContactPage {
   }
 
   async checkContactFormUiElements() {
-    try {
-      const fields = [
-        { locator: this.fullNameInput, name: 'Full Name input' },
-        { locator: this.emailInput, name: 'Email input' },
-        { locator: this.subjectInput, name: 'Subject input' },
-        { locator: this.messageTextarea, name: 'Message textarea' },
-        { locator: this.sendMessageButton, name: 'Send Message button' },
-      ];
+    const fields = [
+      { locator: this.fullNameInput, name: 'Full Name input' },
+      { locator: this.emailInput, name: 'Email input' },
+      { locator: this.subjectInput, name: 'Subject input' },
+      { locator: this.messageTextarea, name: 'Message textarea' },
+      { locator: this.sendMessageButton, name: 'Send Message button' },
+    ];
 
-      for (const { locator, name } of fields) {
-        await expect(locator).toBeVisible();
-        logSuccess(`${name} is visible`);
-      }
-    } catch (error) {
-      logError('ERROR: Contact form UI elements are not visible');
-      console.error(error);
-      throw error;
-    }
+    await verifyFieldsVisible(fields, {
+      logSuccess,
+      logError,
+      errorMessage: 'ERROR: Contact form UI elements are not visible',
+    });
   }
 
   async submitFormAndValidate({ email } = {}) {
