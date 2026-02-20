@@ -215,6 +215,31 @@ class HeaderPage {
     }
   }
 
+    async logoutUser(fullName) {
+    try {
+      const firstName = (fullName || '').trim().split(/\s+/)[0];
+      const userButton = this.header.getByRole('button').filter({ hasText: new RegExp(firstName, 'i') });
+
+      await expect(userButton.first()).toBeVisible();
+      await userButton.first().click();
+
+      const logoutAction = this.page
+        .getByRole('menuitem', { name: /log out|logout|sign out/i })
+        .or(this.page.getByRole('button', { name: /log out|logout|sign out/i }))
+        .or(this.page.getByRole('link', { name: /log out|logout|sign out/i }));
+
+      await expect(logoutAction.first()).toBeVisible();
+      await logoutAction.first().click();
+
+      await this.authButtonsVisible();
+      logSuccess('User logged out successfully');
+    } catch (error) {
+      logError('ERROR: Logout failed');
+      console.error(error);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = { HeaderPage };
