@@ -1,3 +1,17 @@
+const getUncheckedTermsData = () => ({
+	fullName: 'Erhan Demirov',
+	email: `test+${Date.now()}@yahoo.com`,
+	password: 'Test1234!',
+	confirmPassword: 'Test1234!',
+	acceptTerms: false,
+});
+const getInvalidPasswordMinLengthData = () => ({
+	fullName: 'Erhan Demirov',
+	email: `test+${Date.now()}@yahoo.com`,
+	password: '123',
+	confirmPassword: '123',
+	acceptTerms: true,
+});
 const test_email = process.env.TEST_EMAIL || 'test@example.com';
 
 const invalid_contact_form = {
@@ -83,6 +97,8 @@ module.exports = {
 	valid_contact_form,
 	invalid_registration_email,
 	getInvalidPasswordMismatchData,
+	getInvalidPasswordMinLengthData,
+	getUncheckedTermsData,
 	getValidRegistrationData,
 	generateEmail,
 };

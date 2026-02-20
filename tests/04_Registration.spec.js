@@ -4,13 +4,16 @@ const { HeaderPage } = require('./pages/header.page');
 const { logInfo, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 const {
   getValidRegistrationData,
+  getUncheckedTermsData,
   invalid_registration_email,
   getInvalidPasswordMismatchData,
+  getInvalidPasswordMinLengthData,
 } = require('./helpers/testData');
+    
 
 test.describe('Registration', () => {
   test('verify registration page UI elements', async ({ page }) => {
-    test.setTimeout(120000);
+    test.setTimeout(200000);
     const registration = new RegistrationPage(page);
     const header = new HeaderPage(page);
     let stepNum = 0;
@@ -58,7 +61,7 @@ test.describe('Registration', () => {
 
     await test.step('Verify duplicate email validation', async () => {
       await runStep('Verify duplicate email validation', async () => {
-        await registration.submitRegistrationExpectDuplicateEmailError(validRegistrationData);
+        await registration.submitRegistrationExpectError(validRegistrationData, 'duplicateEmail');
       });
     });
 
@@ -71,8 +74,32 @@ test.describe('Registration', () => {
     await test.step('Verify password mismatch validation', async () => {
       await runStep('Verify password mismatch validation', async () => {
         const invalidPasswordMismatchData = getInvalidPasswordMismatchData();
-        await registration.submitRegistrationExpectPasswordMismatch(invalidPasswordMismatchData);
+        await registration.submitRegistrationExpectError(invalidPasswordMismatchData, 'passwordMismatch');
       });
     });
+
+    await test.step('Verify password minimum length validation', async () => {
+      await runStep('Verify password minimum length validation', async () => {
+        const invalidPasswordMinLengthData = getInvalidPasswordMinLengthData();
+        await registration.submitRegistrationExpectError(invalidPasswordMinLengthData, 'passwordMinLength');
+      });
+    });
+  
+      // ...existing test steps...
+    await test.step('Verify unchecked terms validation', async () => {
+      await runStep('Verify unchecked terms validation', async () => {
+        const uncheckedTermsData = getUncheckedTermsData();
+        await registration.submitRegistrationExpectUncheckedTerms(uncheckedTermsData);
+      });
+    });
+
+    await test.step('Verify registration API response status 201', async () => {
+      await runStep('Verify registration API response status 201', async () => {
+        const apiRegistrationData = getValidRegistrationData();
+        await registration.verifyRegistrationApiStatus(apiRegistrationData);
+      });
+    });
+
+
   });
 });

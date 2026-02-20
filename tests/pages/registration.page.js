@@ -104,7 +104,8 @@ class RegistrationPage {
     }
   }
 
-  async submitRegistrationExpectDuplicateEmailError(data) {
+
+  async submitRegistrationExpectError(data, type = 'duplicateEmail') {
     try {
       await this.fullNameInput.fill(data.fullName);
       await this.emailInput.fill(data.email);
@@ -118,17 +119,38 @@ class RegistrationPage {
       await expect(this.submitButton).toBeEnabled();
       await this.submitButton.click();
 
-      const errorMessage = this.page.getByText(
-        'This email is already registered. Please use a different email or sign in.'
-      );
+      if (type === 'duplicateEmail') {
+        const errorMessage = this.page.getByText(
+          'This email is already registered. Please use a different email or sign in.'
+        );
+        await expect(errorMessage.first()).toBeVisible();
+        logSuccess('Duplicate email error message is visible');
+      } else if (type === 'passwordMismatch') {
+        const invalidFields = [{ locator: this.confirmPasswordInput, name: 'Confirm Password input' }];
+        const isConfirmValid = await this.confirmPasswordInput.evaluate((el) => el.checkValidity());
+        if (!isConfirmValid) {
+          await assertFieldsInvalid(invalidFields, logSuccess);
+        } else {
+          const mismatchMessage = this.page.getByText(/passwords? do not match|do not match/i);
+          try {
+            await expect(mismatchMessage.first()).toBeVisible({ timeout: 5000 });
+            logSuccess('Password mismatch message is visible');
+          } catch (messageError) {
+            throw new Error('Password mismatch was not detected');
+          }
+        }
+      } else if (type === 'passwordMinLength') {
+        const minLengthMessage = this.page.getByText('Password must be at least 6 characters long.');
+        await expect(minLengthMessage.first()).toBeVisible();
+        logSuccess('Password minimum length error message is visible');
+      }
 
-      await expect(errorMessage.first()).toBeVisible();
-      logSuccess('Duplicate email error message is visible');
       await this.page.reload();
+      await expect(this.page).toHaveURL(/\/register$/);
       await this.verifyRegistrationPageOpen();
-      logSuccess('Registration page refreshed after duplicate email error');
+      logSuccess('Registration page refreshed after error');
     } catch (error) {
-      logError('ERROR: Duplicate email validation failed');
+      logError(`ERROR: ${type} validation failed`);
       console.error(error);
       throw error;
     }
@@ -192,6 +214,84 @@ class RegistrationPage {
       logSuccess('Registration page refreshed after password mismatch');
     } catch (error) {
       logError('ERROR: Password mismatch validation failed');
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async submitRegistrationExpectUncheckedTerms(data) {
+    try {
+      await this.fullNameInput.fill(data.fullName);
+      await this.emailInput.fill(data.email);
+      await this.passwordInput.fill(data.password);
+      await this.confirmPasswordInput.fill(data.confirmPassword);
+
+      // Do not check terms checkbox
+      if (data.acceptTerms) {
+        await this.termsCheckbox.check();
+      } else {
+        await this.termsCheckbox.uncheck();
+      }
+
+      await expect(this.submitButton).toBeEnabled();
+      await this.submitButton.click();
+
+      // Terms checkbox should be invalid
+      const invalidFields = [{ locator: this.termsCheckbox, name: 'Terms checkbox' }];
+      await assertFieldsInvalid(invalidFields, logSuccess);
+
+      await this.page.reload();
+      await expect(this.page).toHaveURL(/\/register$/);
+      await this.verifyRegistrationPageOpen();
+      logSuccess('Registration page refreshed after unchecked terms');
+    } catch (error) {
+      logError('ERROR: Unchecked terms validation failed');
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async verifyRegistrationApiStatus(data) {
+    try {
+      console.log('Waiting for registration response...');
+      
+      const responsePromise = this.page.waitForResponse(resp => 
+        resp.url().includes('/api/register') && resp.status() === 201, 
+        { timeout: 60000 }
+      );
+
+      // Fill the form fields
+      await this.fullNameInput.fill(data.fullName);
+      await this.emailInput.fill(data.email);
+      await this.passwordInput.fill(data.password);
+      await this.confirmPasswordInput.fill(data.confirmPassword);
+      
+      if (data.acceptTerms) {
+        await this.termsCheckbox.check();
+      } else {
+        await this.termsCheckbox.uncheck();
+      }
+
+      await this.submitButton.click();
+
+      // Wait for the response
+      const response = await responsePromise;
+
+      logSuccess('Registration API responded with status 201');
+      console.log('Registration API status:', response.status()); // <-- pecati status
+      const responseBody = await response.json();
+      
+      if (responseBody.token) {
+        logSuccess('Token is generated after registration');
+        console.log('Generated token:', responseBody.token);
+      } else {
+        logError('Token is NOT generated after registration');
+        throw new Error('Token missing in registration response');
+      }
+      
+      return responseBody;  
+    } catch (error) {
+      logError('ERROR: Registration API did not respond with 201');
       console.error(error);
       throw error;
     }
