@@ -78,11 +78,11 @@ const generateEmail = (baseEmail) => {
 };
 
 const getValidRegistrationData = () => {
-	const baseEmail = 'test+@yahoo.com';
-	const emailWithDate = generateEmail(baseEmail);
+	// Generate a unique email using timestamp
+	const uniqueEmail = `testuser_${Date.now()}@example.com`;
 	return {
 		fullName: 'Erhan Demirov',
-		email: emailWithDate,
+		email: uniqueEmail,
 		password: 'Test1234!',
 		confirmPassword: 'Test1234!',
 		acceptTerms: true,

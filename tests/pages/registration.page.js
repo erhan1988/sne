@@ -251,47 +251,68 @@ class RegistrationPage {
     }
   }
 
+// ...existing code...
   async verifyRegistrationApiStatus(data) {
     try {
       console.log('Waiting for registration response...');
-      
-      const responsePromise = this.page.waitForResponse(resp => 
-        resp.url().includes('/api/register') && resp.status() === 201, 
-        { timeout: 60000 }
-      );
+
+      // Log all requests for debugging
+      this.page.on('request', req => {
+        console.log('[DEBUG] Request:', req.method(), req.url());
+      });
+
+      // Log all responses for debugging
+      this.page.on('response', resp => {
+        if (resp.url().includes('identitytoolkit.googleapis.com/v1/accounts:signUp')) {
+          console.log('[DEBUG] Firebase signUp response status:', resp.status());
+        }
+      });
 
       // Fill the form fields
       await this.fullNameInput.fill(data.fullName);
       await this.emailInput.fill(data.email);
       await this.passwordInput.fill(data.password);
       await this.confirmPasswordInput.fill(data.confirmPassword);
-      
+      console.log(data.email);
+
       if (data.acceptTerms) {
         await this.termsCheckbox.check();
       } else {
         await this.termsCheckbox.uncheck();
       }
 
+      // Wait for any response to Firebase signUp endpoint
+      const responsePromise = this.page.waitForResponse(resp =>
+        resp.url().includes('identitytoolkit.googleapis.com/v1/accounts:signUp'), { timeout: 60000 }
+      );
+
       await this.submitButton.click();
 
       // Wait for the response
       const response = await responsePromise;
-
-      logSuccess('Registration API responded with status 201');
-      console.log('Registration API status:', response.status()); // <-- pecati status
+      const status = response.status();
       const responseBody = await response.json();
-      
-      if (responseBody.token) {
+      console.log('[DEBUG] Registration API status:', status);
+      console.log('[DEBUG] Registration API response body:', responseBody);
+
+      if (status !== 200) {
+        logError(`Registration API responded with unexpected status: ${status}`);
+        throw new Error(`Expected status 200 but got ${status}: ${JSON.stringify(responseBody)}`);
+      }
+
+      logSuccess('Registration API responded with status 200');
+
+      if (responseBody.idToken) {
         logSuccess('Token is generated after registration');
-        console.log('Generated token:', responseBody.token);
+        console.log('Generated token:', responseBody.idToken);
       } else {
         logError('Token is NOT generated after registration');
         throw new Error('Token missing in registration response');
       }
-      
-      return responseBody;  
+
+      return responseBody;
     } catch (error) {
-      logError('ERROR: Registration API did not respond with 201');
+      logError('ERROR: Registration API did not respond as expected');
       console.error(error);
       throw error;
     }
