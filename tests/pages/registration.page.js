@@ -1,3 +1,4 @@
+
 const { expect } = require('@playwright/test');
 const { logSuccess, logError } = require('../helpers/logger');
 const { verifyFieldsVisible } = require('../helpers/uiValidation');
@@ -23,7 +24,7 @@ class RegistrationPage {
     await this.page.goto('/register');
     logSuccess(`Navigated to ${this.page.url()}`);
   }
-
+  
   async verifyRegistrationPageOpen() {
     try {
       await expect(this.page).toHaveURL(/\/register$/);
@@ -309,10 +310,28 @@ class RegistrationPage {
         logError('Token is NOT generated after registration');
         throw new Error('Token missing in registration response');
       }
-
-      return responseBody;
     } catch (error) {
       logError('ERROR: Registration API did not respond as expected');
+      console.error(error);
+      throw error;
+    }
+  }
+
+    async logoutUser(fullName) {
+    try {
+      // Find the user menu button by the user's last name (from the button span text)
+      const lastName = (fullName || '').trim().split(/\s+/).pop();
+      const header = this.page.getByRole('banner');
+      // The button contains a span with the last name
+      const userButton = header.locator('button.flex.items-center.gap-2 span', { hasText: new RegExp(lastName, 'i') }).first();
+      // Click the parent button (user menu)
+      await userButton.locator('..').click();
+      // Click the logout menu item
+      const logoutButton = this.page.getByRole('menuitem', { name: /logout|sign out/i });
+      await logoutButton.click();
+      logSuccess('User logged out after registration');
+    } catch (error) {
+      logError('ERROR: Logout after registration failed');
       console.error(error);
       throw error;
     }

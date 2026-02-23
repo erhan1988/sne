@@ -36,12 +36,12 @@ test.describe('Registration', () => {
         await registration.verifyRegistrationPageOpen();
       });
     });
-
-    await test.step('Verify Registration Page UI Elements', async () => {
+  await test.step('Verify Registration Page UI Elements', async () => {
       await runStep('Verify Registration Page UI Elements', async () => {
         await registration.verifyRegistrationPageUiElements();
       });
     });
+  
 
     const validRegistrationData = getValidRegistrationData();
 
@@ -85,7 +85,6 @@ test.describe('Registration', () => {
       });
     });
   
-      // ...existing test steps...
     await test.step('Verify unchecked terms validation', async () => {
       await runStep('Verify unchecked terms validation', async () => {
         const uncheckedTermsData = getUncheckedTermsData();
@@ -97,6 +96,14 @@ test.describe('Registration', () => {
       await runStep('Verify registration API response status 201', async () => {
         const apiRegistrationData = getValidRegistrationData();
         await registration.verifyRegistrationApiStatus(apiRegistrationData);
+      });
+    });
+
+    await test.step('Logout and return to Registration page', async () => {
+      await runStep('Logout and return to Registration page', async () => {
+        await header.logoutUser(validRegistrationData.fullName);
+        await registration.gotgoRegistration();
+        await registration.verifyRegistrationPageOpen();
       });
     });
 
