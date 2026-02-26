@@ -25,6 +25,7 @@ class AboutPage {
       logSuccess(`URL is ${this.page.url()}`);
     } catch (error) {
       logError('ERROR: URL is not /about');
+      await this.page.screenshot({ path: 'test-results/about-url-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -50,6 +51,7 @@ class AboutPage {
           await expect(target).toBeVisible();
         } catch (error) {
           logError(`ERROR: About page content missing: ${name}`);
+          await this.page.screenshot({ path: `test-results/about-content-${name.replace(/\s+/g, '-')}-error.png`, fullPage: true });
           console.error(error);
           throw error;
         }
@@ -58,6 +60,7 @@ class AboutPage {
       logSuccess('About page content is visible: title, story, meet the team, profile image, shop collection button');
     } catch (error) {
       logError('ERROR: About page content is missing');
+      await this.page.screenshot({ path: 'test-results/about-content-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -73,6 +76,7 @@ class AboutPage {
       logSuccess('Shop Collection button navigates to /viewall');
     } catch (error) {
       logError('ERROR: Shop Collection button did not navigate to /viewall');
+      await this.page.screenshot({ path: 'test-results/about-shopcollection-error.png', fullPage: true });
       console.error(error);
       throw error;
     }

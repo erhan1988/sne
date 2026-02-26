@@ -48,6 +48,7 @@ class HeaderPage {
       logSuccess('Logo icon exists in the Header');
     } catch (error) {
       logError('ERROR: Logo is missing or not visible in the Header');
+      await this.page.screenshot({ path: 'test-results/header-logo-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -65,6 +66,7 @@ class HeaderPage {
       logSuccess('Contact Us Link exists in the Header');
     } catch (error) {
       logError('ERROR: One or more header nav items are missing');
+      await this.page.screenshot({ path: 'test-results/header-navlinks-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -76,6 +78,7 @@ class HeaderPage {
       await this.navLinks();
     } catch (error) {
       logError('ERROR: Logo or header nav links are missing');
+      await this.page.screenshot({ path: 'test-results/header-logo-navlinks-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -89,6 +92,7 @@ class HeaderPage {
       logSuccess('Shopping cart icon exists in the Header');
     } catch (error) {
       logError('ERROR: Search icon or shopping cart icon is missing in the Header');
+      await this.page.screenshot({ path: 'test-results/header-search-cart-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -107,6 +111,7 @@ class HeaderPage {
       logSuccess('Register button exists in the Header');
     } catch (error) {
       logError('ERROR: Login or Register button is missing or disabled in the Header');
+      await this.page.screenshot({ path: 'test-results/header-authbuttons-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -117,6 +122,7 @@ class HeaderPage {
       await verifyLoginRequiredPopupCancel(this.page, this.shoppingCartButton);
     } catch (error) {
       logError('ERROR: Login Required popup did not appear from cart icon');
+      await this.page.screenshot({ path: 'test-results/header-cart-loginpopup-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -133,6 +139,7 @@ class HeaderPage {
       logSuccess('Shop link navigates to Shop Our Collection section and cards are visible');
     } catch (error) {
       logError('ERROR: Shop section or cards are not visible');
+      await this.page.screenshot({ path: 'test-results/header-shoplink-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -183,6 +190,7 @@ class HeaderPage {
       throw new Error(`Unsupported nav target: ${target}`);
     } catch (error) {
       logError('ERROR: Nav link did not navigate correctly');
+      await this.page.screenshot({ path: 'test-results/header-navlink-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -210,6 +218,7 @@ class HeaderPage {
       logSuccess('Shop section is visible after clearing search');
     } catch (error) {
       logError('ERROR: Search did not return results');
+      await this.page.screenshot({ path: 'test-results/header-search-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -235,6 +244,7 @@ class HeaderPage {
       logSuccess('User logged out successfully');
     } catch (error) {
       logError('ERROR: Logout failed');
+      await this.page.screenshot({ path: 'test-results/header-logout-error.png', fullPage: true });
       console.error(error);
       throw error;
     }

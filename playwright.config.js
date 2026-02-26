@@ -7,10 +7,10 @@ module.exports = defineConfig({
   retries: 0,
   use: {
     baseURL: 'https://sneaker-web-omega.vercel.app/',
-    headless: false,
+    headless: true,
     viewport: null,
     launchOptions: {
-      slowMo: 2000,
+      slowMo: 100,
       args: ['--start-maximized'],
     },
     screenshot: 'only-on-failure',

@@ -24,6 +24,7 @@ class CartPage {
       logSuccess('verifyCartIsEmpty: Cart modal and all elements are visible');
     } catch (error) {
       logError('verifyCartIsEmpty: ERROR - Cart modal or elements are not visible');
+      await this.page.screenshot({ path: 'test-results/cart-empty-error.png', fullPage: true });
       throw error;
     }
   }
@@ -75,6 +76,7 @@ class CartPage {
       logSuccess('Pay button is visible and contains correct text');
     } catch (error) {
       logError('ERROR: Pay button is not visible or does not contain correct text');
+      await this.page.screenshot({ path: 'test-results/cart-paybutton-error.png', fullPage: true });
       throw error;
     }
   }
@@ -115,6 +117,7 @@ class CartPage {
       logSuccess('Checkout completed and success popup/buttons verified');
     } catch (error) {
       logError('ERROR: Checkout success popup/buttons not visible or flow failed');
+      await this.page.screenshot({ path: 'test-results/cart-checkout-success-error.png', fullPage: true });
       throw error;
     }
   }

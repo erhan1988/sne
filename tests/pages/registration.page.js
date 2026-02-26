@@ -31,6 +31,7 @@ class RegistrationPage {
       logSuccess(`Registration page opened: ${this.page.url()}`);
     } catch (error) {
       logError('ERROR: Registration page did not open');
+      await this.page.screenshot({ path: 'test-results/registration-pageopen-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -100,6 +101,7 @@ class RegistrationPage {
       logSuccess('User menu button is visible in header');
     } catch (error) {
       logError('ERROR: Valid registration submission failed');
+      await this.page.screenshot({ path: 'test-results/registration-valid-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -152,6 +154,7 @@ class RegistrationPage {
       logSuccess('Registration page refreshed after error');
     } catch (error) {
       logError(`ERROR: ${type} validation failed`);
+      await this.page.screenshot({ path: `test-results/registration-${type}-error.png`, fullPage: true });
       console.error(error);
       throw error;
     }
@@ -175,6 +178,7 @@ class RegistrationPage {
       await assertFieldsInvalid(invalidFields, logSuccess);
     } catch (error) {
       logError('ERROR: Invalid email format validation failed');
+      await this.page.screenshot({ path: 'test-results/registration-invalidemail-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -215,6 +219,7 @@ class RegistrationPage {
       logSuccess('Registration page refreshed after password mismatch');
     } catch (error) {
       logError('ERROR: Password mismatch validation failed');
+      await this.page.screenshot({ path: 'test-results/registration-passwordmismatch-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -247,6 +252,7 @@ class RegistrationPage {
       logSuccess('Registration page refreshed after unchecked terms');
     } catch (error) {
       logError('ERROR: Unchecked terms validation failed');
+      await this.page.screenshot({ path: 'test-results/registration-terms-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -298,6 +304,7 @@ class RegistrationPage {
 
       if (status !== 200) {
         logError(`Registration API responded with unexpected status: ${status}`);
+        await this.page.screenshot({ path: 'test-results/registration-api-error.png', fullPage: true });
         throw new Error(`Expected status 200 but got ${status}: ${JSON.stringify(responseBody)}`);
       }
 
@@ -308,10 +315,12 @@ class RegistrationPage {
         console.log('Generated token:', responseBody.idToken);
       } else {
         logError('Token is NOT generated after registration');
+        await this.page.screenshot({ path: 'test-results/registration-token-error.png', fullPage: true });
         throw new Error('Token missing in registration response');
       }
     } catch (error) {
       logError('ERROR: Registration API did not respond as expected');
+      await this.page.screenshot({ path: 'test-results/registration-api-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -332,6 +341,7 @@ class RegistrationPage {
       logSuccess('User logged out after registration');
     } catch (error) {
       logError('ERROR: Logout after registration failed');
+      await this.page.screenshot({ path: 'test-results/registration-logout-error.png', fullPage: true });
       console.error(error);
       throw error;
     }

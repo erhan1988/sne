@@ -27,6 +27,7 @@ class LoginPage {
       logSuccess(`Login page opened: ${this.page.url()}`);
     } catch (error) {
       logError('ERROR: Login page did not open');
+      await this.page.screenshot({ path: 'test-results/login-pageopen-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -58,6 +59,7 @@ class LoginPage {
       await this.page.reload();
     } catch (error) {
       logError(errorLog);
+      await this.page.screenshot({ path: 'test-results/login-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -97,6 +99,7 @@ class LoginPage {
       }
     } catch (error) {
       logError('ERROR: Login with partial fields did not show expected validation');
+      await this.page.screenshot({ path: 'test-results/login-partialfields-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
@@ -112,6 +115,7 @@ class LoginPage {
       logSuccess('Successfully logged in and user menu is visible');
     } catch (error) {
       logError('ERROR: Login with valid credentials failed');
+      await this.page.screenshot({ path: 'test-results/login-valid-error.png', fullPage: true });
       console.error(error);
       throw error;
     }
