@@ -1,6 +1,7 @@
 const { expect } = require('@playwright/test');
 const { logSuccess, logError } = require('../helpers/logger');
 const { assertFieldsInvalid } = require('../helpers/formValidation');
+const { verifyFieldsVisible } = require('../helpers/uiValidation');
 
 class ContactPage {
   /**
