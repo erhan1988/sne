@@ -4,7 +4,7 @@ const { ContactPage } = require('./pages/contact.page');
 const { logInfo, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 const { test_email, invalid_contact_form, missing_subject_form, missing_message_form, valid_contact_form } = require('./helpers/testData');
 
-test.describe('Contact Us', () => {
+test.describe('@contact Contact Us', () => {
   test('opens Contact Us and verifies content', async ({ page }) => {
     const contact = new ContactPage(page);
     let stepNum = 0;

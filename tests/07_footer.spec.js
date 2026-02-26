@@ -2,7 +2,7 @@
 const { test } = require('@playwright/test');
 const { FooterPage } = require('./pages/footer.page');
 
-test.describe('Footer', () => {
+test.describe('@footer Footer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });

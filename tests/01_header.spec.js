@@ -3,7 +3,7 @@ const { HeaderPage } = require('./pages/header.page');
 //const { ContactPage } = require('./pages/contact.page');
 const { logInfo, logSuccess, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 
-test.describe('Header', () => {
+test.describe('@header Header', () => {
   test('shows logo and Auth links', async ({ page }) => {
     const header = new HeaderPage(page);
   //  const contact = new ContactPage(page);

@@ -11,7 +11,7 @@ const {
 } = require('./helpers/testData');
     
 
-test.describe('Registration', () => {
+test.describe('@registration Registration', () => {
   test('verify registration page UI elements', async ({ page }) => {
     test.setTimeout(200000);
     const registration = new RegistrationPage(page);

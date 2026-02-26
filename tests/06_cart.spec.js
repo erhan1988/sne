@@ -3,7 +3,7 @@ const { LoginPage } = require('./pages/login.page');
 const { HeaderPage } = require('./pages/header.page');
 const { CartPage } = require('./pages/cart.page');
 
-test.describe('Cart Modal - Empty State', () => {
+test.describe('@cart Cart Modal - Empty State', () => {
   test('After login, clicking cart icon shows empty cart modal and redirects to Checkout Page', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const headerPage = new HeaderPage(page);

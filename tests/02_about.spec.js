@@ -3,7 +3,7 @@ const { AboutPage } = require('./pages/about.page');
 const { ViewAllPage } = require('./pages/viewall.page');
 const { logInfo, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 
-test.describe('About', () => {
+test.describe('@about About', () => {
   test('shows About page content', async ({ page }) => {
     const about = new AboutPage(page);
     let stepNum = 0;

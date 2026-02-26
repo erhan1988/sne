@@ -3,7 +3,7 @@ const { test } = require('@playwright/test');
 const { LoginPage } = require('./pages/login.page');
 const { logInfo, setStepPrefix, clearStepPrefix } = require('./helpers/logger');
 
-test.describe('Login', () => {
+test.describe('@login Login', () => {
   test('Open Login page and verify', async ({ page }) => {
     test.setTimeout(60000);
     const login = new LoginPage(page);
