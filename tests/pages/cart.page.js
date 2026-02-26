@@ -1,5 +1,7 @@
+
 const { expect } = require('@playwright/test');
 const { logSuccess, logError } = require('../helpers/logger');
+const { verifyFieldsVisible } = require('../helpers/uiValidation');
 
 class CartPage {
   /**
@@ -49,8 +51,6 @@ class CartPage {
     await expect(this.page.locator('div.w-24.h-24.bg-gray-50.rounded-xl.overflow-hidden.border.border-gray-100.flex-shrink-0 img[alt="Nike Air Max 90"]')).toBeVisible();
 
     // Check for shipping/payment fields using verifyFieldsVisible
-    const { verifyFieldsVisible } = require('../helpers/uiValidation');
-    const { logSuccess, logError } = require('../helpers/logger');
     const fields = [
       { locator: this.page.locator('#name'), name: 'Name field' },
       { locator: this.page.locator('#email'), name: 'Email field' },
@@ -75,6 +75,46 @@ class CartPage {
       logSuccess('Pay button is visible and contains correct text');
     } catch (error) {
       logError('ERROR: Pay button is not visible or does not contain correct text');
+      throw error;
+    }
+  }
+
+    async completeCheckoutAndVerifySuccess() {
+    try {
+      // Fill checkout fields
+      await this.page.locator('#name').fill('erhan');
+      await this.page.locator('#email').fill('erhan@yahoo.com');
+      await this.page.locator('#address').fill('karadjova bitola 7000');
+      await this.page.locator('#city').fill('bitola');
+      await this.page.locator('#postalCode').fill('7000');
+      await this.page.locator('#cardNumber').fill('4242 4242 4242 4242');
+      await this.page.locator('#expiry').fill('12/28');
+      await this.page.locator('#cvv').fill('123');
+
+      // Click Pay button
+      await this.page.locator('button[type="submit"]').click();
+
+      // Wait for redirect to success page
+      await this.page.waitForURL('https://sneaker-web-omega.vercel.app/checkout-success', { timeout: 10000 });
+      await expect(this.page).toHaveURL('https://sneaker-web-omega.vercel.app/checkout-success');
+
+      // Verify success popup
+      const successPopup = this.page.locator('div.max-w-lg.w-full.text-center');
+      await expect(successPopup).toBeVisible();
+      await expect(successPopup.locator('h1')).toHaveText('Payment Successful!');
+      await expect(successPopup.getByText('Thank you for your purchase. Your order has been confirmed.')).toBeVisible();
+
+      // Verify Continue Shopping button
+      const continueBtn = this.page.locator('button', { hasText: /continue shopping/i });
+      await expect(continueBtn).toBeVisible();
+
+      // Verify View Order Details button
+      const viewOrderBtn = this.page.locator('button', { hasText: /view order details/i });
+      await expect(viewOrderBtn).toBeVisible();
+
+      logSuccess('Checkout completed and success popup/buttons verified');
+    } catch (error) {
+      logError('ERROR: Checkout success popup/buttons not visible or flow failed');
       throw error;
     }
   }

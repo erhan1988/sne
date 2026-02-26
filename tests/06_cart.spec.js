@@ -36,5 +36,9 @@ test.describe('Cart Modal - Empty State', () => {
     await test.step('Add product to cart and verify checkout page', async () => {
       await cartPage.addProductAndVerifyCheckout();
     });
+
+    await test.step('Complete checkout and verify success popup', async () => {
+      await cartPage.completeCheckoutAndVerifySuccess();
+    });
   });
 });
