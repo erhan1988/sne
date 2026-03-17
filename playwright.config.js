@@ -15,5 +15,8 @@ module.exports = defineConfig({
     },
     screenshot: 'only-on-failure',
   },
-  reporter: [['line', { printSteps: true }]],
+  reporter: [
+    ['line', { printSteps: true }],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ],
 });
