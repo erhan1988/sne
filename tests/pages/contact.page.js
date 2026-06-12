@@ -27,9 +27,7 @@ class ContactPage {
     this.subjectInput = page.locator('#input-subject');
     this.messageTextarea = page.locator('#input-message');
     this.sendMessageButton = page.locator('#btn-send-message');
-    this.messageSentTitle = page.locator('h3.text-2xl.font-bold.text-gray-900.mb-2', {
-      hasText: /message sent/i,
-    });
+    this.messageSentTitle = page.getByRole('heading', { name: /message sent/i,}); 
     this.sendAnotherButton = page.locator('#btn-send-another');
 
   }
