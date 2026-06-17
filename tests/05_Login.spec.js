@@ -66,7 +66,7 @@ test.describe('@login Login', () => {
 
     await test.step('Successful Login', async () => {
       await runStep('Login with valid credentials', async () => {
-        await login.loginWithValidCredentials('erhan.demirov@yahoo.com', 'TestPassword123');
+        await login.loginWithValidCredentials('erhan.demirov@yahoo.com', '123456');
       });
     });
   });
